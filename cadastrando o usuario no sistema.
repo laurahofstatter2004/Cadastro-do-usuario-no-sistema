@@ -1,0 +1,70 @@
+package Classes_de_Conexoes;
+
+import LoginUsuario.Usuario;
+
+import javax.swing.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+
+//cadastrar usuario;
+public class UsuarioDAO {
+
+    Connection con;
+    PreparedStatement pstm;
+    ResultSet rs;
+    ArrayList<UsuarioDTO> lista = new ArrayList<>();
+
+    public ArrayList<UsuarioDTO> cadastrarUsuario(Usuario usuario) {
+
+        String sql = "insert into usuario_cadastro(nome_usuario, email_usuario, endereco_usuario, senha_usuario, cep_usuario, telefone_usuario) values(?, ?, ?, ?, ?, ?) ";
+
+        con = new Conexao_com_Banco().conectaDB();
+
+
+        try {
+            pstm = con.prepareStatement(sql);
+            UsuarioDTO objusuariodto = null;
+            pstm.setString(1, objusuariodto.getNome_usuario());
+            pstm.setString(2, objusuariodto.getEmail_usuario());
+            pstm.setString(3, objusuariodto.getEndereco_usuario());
+            pstm.setString(4, objusuariodto.getSenha_usuario());
+            pstm.setString(5, objusuariodto.getCep_usuario());
+            pstm.setString(6, objusuariodto.getTelefone_usuario());
+
+            pstm.execute();
+            pstm.close();
+
+        } catch (SQLException erro) {
+            JOptionPane.showMessageDialog(null, "UsuarioDAO CadastrarUsuario: " + erro);
+
+        }
+        return null;
+    }
+
+    public ArrayList<UsuarioDTO> PesquisarUsuario() {
+        String sql = "delete from usuario_cadastro where id_usuario = ?";
+        try {
+            pstm = con.prepareStatement(sql);
+            rs = pstm.executeQuery();
+
+            while (rs.next()) {
+                UsuarioDTO objusuariodto = new UsuarioDTO();
+                objusuariodto.setCep_usuario(rs.getString("cep_usuario"));
+                objusuariodto.setEmail_usuario(rs.getString("email_usuario"));
+                objusuariodto.setEndereco_usuario(rs.getString("endereco_usuario"));
+                objusuariodto.setNome_usuario(rs.getString("nome_usuario"));
+                objusuariodto.setSenha_usuario(rs.getString("senha_usuario"));
+                objusuariodto.setTelefone_usuario(rs.getString("telefone_usuario"));
+
+                lista.add(objusuariodto);
+            }
+
+        } catch (SQLException erro) {
+            JOptionPane.showMessageDialog(null, "UsuarioDAO PesquisarUsuario: " + erro);
+        }
+        return lista;
+    }
+}
